@@ -35,6 +35,8 @@ class PIDFile {
         void Save();
         void Close(){ delete this; }
     private:
+        void Modified();
+        bool m_modified = false;
         void Focused();
         sfg::Window::Ptr Window = 0;
         sfg::Image::Ptr Image = 0;
@@ -57,7 +59,7 @@ class PIDStudio {
 		void WindowDragStop();
 		void PalChange();
 		void MenuBarMoveByButton();
-		PIDStudio();
+		PIDStudio(int argc, char* argv[]);
 		~PIDStudio();
 	private:
 	    sfg::Window::Ptr MoveByWindow = 0;

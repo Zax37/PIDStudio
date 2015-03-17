@@ -41,20 +41,13 @@
 			<Add directory="../shared/SFML-2.1/include" />
 			<Add directory="../shared/glew/include" />
 			<Add directory="../shared/SFGUI/include" />
-			<Add directory="../shared/cygwin/home/Zax37/wxWidgets/include" />
-			<Add directory="../shared/cygwin/home/Zax37/wxWidgets/lib/gcc_lib/mswu" />
 		</Compiler>
 		<Linker>
 			<Add library="glew32" />
 			<Add library="sfgui" />
-			<Add library="gdi32" />
-			<Add library="user32" />
-			<Add library="kernel32" />
-			<Add library="comctl32" />
 			<Add directory="../shared/SFML-2.1/lib" />
 			<Add directory="../shared/glew/lib/Release/Win32" />
 			<Add directory="../shared/SFGUI/lib" />
-			<Add directory="../shared/cygwin/home/Zax37/wxWidgets/lib/gcc_dll" />
 		</Linker>
 		<Unit filename="PIDStudio.cpp" />
 		<Unit filename="PIDStudio.h" />
@@ -66,9 +59,6 @@
 			<lib_finder disable_auto="1" />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
-				<resources>
-					<wxDialog wxs="wxsmith/MoveBy.wxs" src="MoveBy.cpp" hdr="MoveBy.h" fwddecl="0" i18n="1" name="MoveBy" language="CPP" />
-				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

@@ -2,7 +2,9 @@
 #define SCREEN_HEIGHT 768
 #include "PIDStudio.h"
 
-PIDStudio::PIDStudio(){
+PIDStudio::PIDStudio(int argc, char* argv[]){
+    std::string working_dir(argv[0]);
+    working_dir.erase(working_dir.find_last_of('\\')+1);
 	render_window = new sf::RenderWindow( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT ), "PIDStudio 2014", sf::Style::None );
 	render_window->setFramerateLimit(60); // call it once, after creating the window
     auto MenuBar = sfg::Window::Create();
@@ -10,7 +12,7 @@ PIDStudio::PIDStudio(){
     desktop.SetProperty( "Window", "TitleBackgroundColor", sf::Color( 95, 105, 85 ) );
     desktop.SetProperty( "#workspace", "BackgroundColor", sf::Color( 55, 55, 55 ) );
     desktop.SetProperty( "#menubar", "BackgroundColor", sf::Color( 75, 75, 75 ) );
-    sf::Image logo; logo.loadFromFile("logo.png");
+    sf::Image logo; logo.loadFromFile(working_dir+"logo.png");
 	MenuBar->SetStyle(sfg::Window::Style::BACKGROUND);
     auto Logo = sfg::Image::Create(logo);
     auto New = sfg::Button::Create( "New" );
@@ -67,7 +69,7 @@ PIDStudio::PIDStudio(){
 	// Main loop!
 	sf::Event event;
 	sf::Clock clock;
-
+    for(int i=1; i<argc; i++) OpenedFiles.push_back(new PIDFile(this, argv[i]));
 	while( render_window->isOpen() ) {
 		// Event processing.
 		while( render_window->pollEvent( event ) ) {
@@ -94,6 +96,6 @@ PIDStudio::PIDStudio(){
 
 int main(int argc, char* argv[])
 {
-  PIDStudio PIDStudio;
+  PIDStudio PIDStudio(argc, argv);
   return 0;
 }

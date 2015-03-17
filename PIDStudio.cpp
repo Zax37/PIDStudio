@@ -147,15 +147,15 @@ void PIDStudio::PalChange()
 
 void PIDFile::SetPalette(PIDPalette* Pal)
 {
-        sf::Image IMG; IMG.create(m_iW, m_iH);
-        for(int x=0; x<m_iW; x++)
-            for(int y=0; y<m_iH; y++)
-            {
-                    IMG.setPixel(x, y, Pal->GetColor(m_iData[y*m_iW+x]));
-            }
-        Image->SetImage(IMG);
-        if(m_iFlags & Flag_OwnPalette) { delete m_iPalette; m_iFlags = (FLAGS)((int)m_iFlags-(int)Flag_OwnPalette); }
-        m_iPalette = Pal;
+    sf::Image IMG; IMG.create(m_iW, m_iH);
+    for(int x=0; x<m_iW; x++)
+        for(int y=0; y<m_iH; y++)
+        {
+                IMG.setPixel(x, y, Pal->GetColor(m_iData[y*m_iW+x]));
+        }
+    Image->SetImage(IMG);
+    if(m_iFlags & Flag_OwnPalette) { delete m_iPalette; m_iFlags = (FLAGS)((int)m_iFlags-(int)Flag_OwnPalette); }
+    m_iPalette = Pal;
 }
 
 void PIDFile::ConvertTo(PIDPalette* Pal)
@@ -164,6 +164,15 @@ void PIDFile::ConvertTo(PIDPalette* Pal)
             for(int y=0; y<m_iH; y++)
                 m_iData[y*m_iW+x] = Pal->FindColor(m_iPalette->GetColor(m_iData[y*m_iW+x]));
     SetPalette(Pal);
+    Modified();
+}
+
+void PIDFile::Modified()
+{
+    if(m_modified) return;
+
+    Window->SetTitle("*"+Window->GetTitle());
+    m_modified = true;
 }
 
 byte PIDPalette::FindColor(sf::Color color)
@@ -357,6 +366,7 @@ void PIDStudio::MenuBarMoveByButton()
 
 void PIDFile::Save()
 {
+    if(!m_modified) return;
     std::ofstream osOut(path, std::ios_base::binary | std::ios_base::out);;
     osOut.WLEN(m_iID, 4);
     osOut.WLEN(m_iFlags, 4);
@@ -429,6 +439,9 @@ void PIDFile::Save()
      }
     }
     osOut.close();
+    Window->SetTitle(Window->GetTitle().getData()+1);
+    m_modified = false;
+
 }
 
 PIDFile::~PIDFile()
@@ -444,15 +457,14 @@ PIDFile::~PIDFile()
       if(m_iFlags & Flag_OwnPalette)
         delete m_iPalette;
       delete[] m_iData;
-      for(int i=0; i<Engine->OpenedFiles.size(); i++)
-        if(Engine->OpenedFiles[i]==this) Engine->OpenedFiles.erase(Engine->OpenedFiles.begin()+i);
+      auto vec = &Engine->OpenedFiles;
+      vec->erase(std::remove(vec->begin(), vec->end(), this), vec->end());
     }
 }
 
 PIDStudio::~PIDStudio()
 {
-    for(int i=0; i<OpenedFiles.size(); i++)
-        delete OpenedFiles[i];
+    for(auto f : OpenedFiles) delete f;
     render_window->close();
     delete render_window;
     exit(0);
