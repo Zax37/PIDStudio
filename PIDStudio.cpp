@@ -306,7 +306,7 @@ PIDFile::PIDFile(class PIDStudio * engine, const char* filepath)
      }
     }
     isSource.close();
-    std::cout << "ID: " << m_iID << "Size: " << m_iW << "x" << m_iH << " Flags: " << (int)m_iFlags << std::endl;
+    //std::cout << "x: " << m_iU[0] << "y: " << m_iU[1] << std::endl;
     Window = sfg::Window::Create();
     Window->SetTitle(strrchr(filepath, '\\')+1);
     Window->SetRequisition(sf::Vector2f(m_iW<70?70:m_iW , m_iH));
@@ -329,8 +329,8 @@ PIDFile::PIDFile(class PIDStudio * engine, const char* filepath)
 
 void PIDStudio::MenuBarSaveButton()
 {
-    for(int i=0; i<OpenedFiles.size(); i++)
-        OpenedFiles[i]->Save();
+    for(auto f: OpenedFiles)
+        f->Save();
 }
 
 void PIDStudio::MenuBarMoveByButton()
@@ -339,29 +339,42 @@ void PIDStudio::MenuBarMoveByButton()
     MoveByWindow->SetTitle("Move Offsets");
     auto m_labela = sfg::Label::Create( "X:" );
     auto m_labelb = sfg::Label::Create( "Y:" );
-    auto Spina = sfg::SpinButton::Create(-200, 200, 1);
-    auto Spinb = sfg::SpinButton::Create(-200, 200, 1);
+    auto Spina = sfg::SpinButton::Create(-1000, 1000, 1);
+    auto Spinb = sfg::SpinButton::Create(-1000, 1000, 1);
     auto BtnOK = sfg::Button::Create("MOVE");
     auto BtnCA = sfg::Button::Create("CANCEL");
     auto Panel = sfg::Table::Create();
     auto separator = sfg::Separator::Create();
+    auto space = sfg::Box::Create();
     Panel->Attach(m_labela, {0, 0, 1, 1}, 0, 2, sf::Vector2f(5, 5) );
     Panel->Attach(Spina, {1, 0, 4, 1}, 3, 3, sf::Vector2f(15, 1) );
-    //Panel->Attach(separator, {0, 1, 5, 1}, 3, 3, sf::Vector2f(5, 5) );
+    Panel->Attach(space, {0, 1, 5, 1}, 3, 3, sf::Vector2f(5, 5) );
     Panel->Attach(m_labelb, {0, 2, 1, 1}, 0, 2, sf::Vector2f(5, 5) );
     Panel->Attach(Spinb, {1, 2, 4, 1}, 3, 3, sf::Vector2f(15, 1) );
-    Panel->Attach(separator, {0, 3, 5, 1}, 3, 3, sf::Vector2f(5, 5) );
-    Panel->Attach(BtnOK, {0, 4, 2, 1}, 2, 2, sf::Vector2f(5, 5) );
-    Panel->Attach(BtnCA, {3, 4, 2, 1}, 2, 2, sf::Vector2f(5, 5) );
+    Panel->Attach(space, {0, 3, 5, 1}, 3, 3, sf::Vector2f(5, 5) );
+    Panel->Attach(BtnOK, {0, 4, 2, 1}, 3, 3, sf::Vector2f(7, 2) );
+    Panel->Attach(BtnCA, {3, 4, 2, 1}, 3, 3, sf::Vector2f(5, 2) );
+    Spina->SetDigits(0);
+    Spinb->SetDigits(0);
     MoveByWindow->Add(Panel);
-    MoveByWindow->SetRequisition(sf::Vector2f(180, 115));
+    MoveByWindow->SetRequisition(sf::Vector2f(160, 55));
     MoveByWindow->SetPosition(sf::Vector2f((float)render_window->getSize().x/2 - MoveByWindow->GetRequisition().x/2 , (float)render_window->getSize().y/2 - MoveByWindow->GetRequisition().y/2 ));
     MoveByWindow->SetStyle(sfg::Window::Style::DIALOG | sfg::Window::Style::MOVABLE | sfg::Window::Style::CLOSE | sfg::Window::Style::SHADOW);
     MoveByWindow->GetSignal(sfg::Window::OnCloseButton ).Connect( [this](){ desktop.Remove(MoveByWindow); MoveByWindow = 0; } );
+    BtnCA->GetSignal(sfg::Window::OnLeftClick ).Connect( [this](){ desktop.Remove(MoveByWindow); MoveByWindow = 0; } );
+    BtnOK->GetSignal(sfg::Window::OnLeftClick ).Connect( [this, Spina, Spinb](){ for(auto f: OpenedFiles) f->MoveOffsets(Spina->GetValue(), Spinb->GetValue()); desktop.Remove(MoveByWindow); MoveByWindow = 0; } );
     desktop.Add(MoveByWindow);
    // MoveByWindow->GrabModal();
     //HINSTANCE hInstance = GetWindowLong(hwnd, GWL_HINSTANCE);
     //WinMain((HINSTANCE)hwnd, render_window->getPosition(), render_window->getSize());
+}
+
+void PIDFile::MoveOffsets(int x, int y)
+{
+    if(!x && !y) return;
+    m_iU[0] += x;
+    m_iU[1] += y;
+    Modified();
 }
 
 void PIDFile::Save()

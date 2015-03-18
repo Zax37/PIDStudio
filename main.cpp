@@ -1,11 +1,17 @@
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
 #include "PIDStudio.h"
+#include "resource.h"
+#include <windows.h>
+#include <exception>
 
 PIDStudio::PIDStudio(int argc, char* argv[]){
     std::string working_dir(argv[0]);
     working_dir.erase(working_dir.find_last_of('\\')+1);
-	render_window = new sf::RenderWindow( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT ), "PIDStudio 2014", sf::Style::None );
+	render_window = new sf::RenderWindow( sf::VideoMode( SCREEN_WIDTH, SCREEN_HEIGHT ), "PIDStudio", sf::Style::None );
+	sf::Image Icon;
+	Icon.loadFromMemory(IconPNG, sizeof(IconPNG));
+	render_window->setIcon(32, 32, Icon.getPixelsPtr());
 	render_window->setFramerateLimit(60); // call it once, after creating the window
     auto MenuBar = sfg::Window::Create();
     desktop.SetProperty( "Window", "BorderColor", sf::Color( 35, 35, 35 ) );
@@ -96,6 +102,25 @@ PIDStudio::PIDStudio(int argc, char* argv[]){
 
 int main(int argc, char* argv[])
 {
-  PIDStudio PIDStudio(argc, argv);
-  return 0;
+    try {
+    // Try to open the mutex.
+    HANDLE hMutex = OpenMutex(
+      MUTEX_ALL_ACCESS, 0, "PIDStudio");
+
+    if (!hMutex)
+      hMutex =
+        CreateMutex(0, 0, "PIDStudio");
+    else
+    {
+        //tutaj sygna³ do istniej¹cego okna
+        return 0;
+    }
+
+    PIDStudio PIDStudio(argc, argv);
+    ReleaseMutex(hMutex);
+    }
+    catch (std::exception &exception) {
+        //Application->ShowException(&exception);
+    }
+    return 0;
 }

@@ -34,6 +34,7 @@ class PIDFile {
         void ConvertTo(PIDPalette* Pal);
         void Save();
         void Close(){ delete this; }
+        void MoveOffsets(int x, int y);
     private:
         void Modified();
         bool m_modified = false;
