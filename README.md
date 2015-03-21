@@ -2,7 +2,7 @@
 
 ####About
 
-Graphics editor which operates on PID files used by old WAP32 games - Captain Claw, Gruntz or GetMedieval!<br>
+Graphics editor which operates on PID files used by old WAP32 games - Claw, Gruntz or GetMedieval!<br>
 Currently it allows You to convert files from one palette to another and move its offsets.
 
  
