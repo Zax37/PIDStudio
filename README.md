@@ -2,7 +2,7 @@
 
 ####About
 
-Graphics editor which operates on PID files used by old WAP32 games like Claw or Gruntz.<br>
+Graphic editor which operates on PID files(used by old WAP32 games like Claw or Gruntz).<br>
 Currently it allows You to convert files from one palette to another and move its offsets.
 
  
