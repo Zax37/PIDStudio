@@ -2,3 +2,5 @@
 *.depend
 *.layout
 *.res
+.vs
+build

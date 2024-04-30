@@ -1,4 +1,5 @@
 #include <SFGUI/SFGUI.hpp>
+#include <SFGUI/Widgets.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
 #define byte uint8_t

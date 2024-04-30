@@ -27,7 +27,7 @@ void PIDStudio::MenuBarOpenButton()
 
     //ZeroMemory(&ofn, sizeof(ofn));
 
-    char *filter = "PID Files (*.PID)\0*.PID\0";
+    char filter[] = "PID Files (*.PID)\0*.PID\0";
     HWND owner = render_window->getSystemHandle();
 
     char fileName[MAX_PATH*10] = "";
@@ -109,7 +109,7 @@ void PIDStudio::PalChange()
 
         ZeroMemory(&ofn, sizeof(ofn));
 
-        char *filter = "Palette Files (*.PAL)\0*.PAL\0";
+        char filter[] = "Palette Files (*.PAL)\0*.PAL\0";
         HWND owner = render_window->getSystemHandle();
 
         char fileName[MAX_PATH] = "";
@@ -199,8 +199,7 @@ byte PIDPalette::FindColor(sf::Color color)
 PIDPalette::PIDPalette(const char* filepath)
 {
     std::ifstream isSource(filepath, std::ios_base::binary | std::ios_base::in);
-    if (isSource==NULL) { delete this; }
-    else {
+    if (isSource.good()) {
         for(int i=0; i<256; i++)
             for(int j=0; j<3; j++)
                 isSource.RBYTE(Data[i][j]);
@@ -232,8 +231,7 @@ PIDFile::PIDFile(class PIDStudio * engine, const char* filepath)
 {
     Engine = engine;
     std::ifstream isSource(filepath, std::ios_base::binary | std::ios_base::in);
-    if (isSource==NULL) { delete this; }
-    else {
+    if (isSource.good()) {
     isSource.RINT(m_iID);
     isSource.RINT(m_iFlags);
     isSource.RINT(m_iW);
@@ -311,7 +309,7 @@ PIDFile::PIDFile(class PIDStudio * engine, const char* filepath)
     Window->SetTitle(strrchr(filepath, '\\')+1);
     Window->SetRequisition(sf::Vector2f(m_iW<70?70:m_iW , m_iH));
     Window->SetPosition(sf::Vector2f((float)Engine->render_window->getSize().x/2 - Window->GetRequisition().x/2 , (float)Engine->render_window->getSize().y/2 - Window->GetRequisition().y/2 ));
-    Window->GetSignal(sfg::Widget::OnCloseButton).Connect( std::bind( &PIDFile::Close, this ) );
+    Window->GetSignal(sfg::Window::OnCloseButton).Connect( std::bind( &PIDFile::Close, this ) );
     Image = sfg::Image::Create();
     sfg::ComboBox* pal_list = (sfg::ComboBox*)(&*Engine->palette_box->GetChildren()[1]);
     if(m_iPalette) { SetPalette(m_iPalette); Engine->DrawPalette(m_iPalette); }
@@ -359,7 +357,7 @@ void PIDStudio::MenuBarMoveByButton()
     MoveByWindow->Add(Panel);
     MoveByWindow->SetRequisition(sf::Vector2f(160, 55));
     MoveByWindow->SetPosition(sf::Vector2f((float)render_window->getSize().x/2 - MoveByWindow->GetRequisition().x/2 , (float)render_window->getSize().y/2 - MoveByWindow->GetRequisition().y/2 ));
-    MoveByWindow->SetStyle(sfg::Window::Style::DIALOG | sfg::Window::Style::MOVABLE | sfg::Window::Style::CLOSE | sfg::Window::Style::SHADOW);
+    //MoveByWindow->SetStyle(sfg::Window::Style::DIALOG | sfg::Window::Style::MOVABLE | sfg::Window::Style::CLOSE | sfg::Window::Style::SHADOW);
     MoveByWindow->GetSignal(sfg::Window::OnCloseButton ).Connect( [this](){ desktop.Remove(MoveByWindow); MoveByWindow = 0; } );
     BtnCA->GetSignal(sfg::Window::OnLeftClick ).Connect( [this](){ desktop.Remove(MoveByWindow); MoveByWindow = 0; } );
     BtnOK->GetSignal(sfg::Window::OnLeftClick ).Connect( [this, Spina, Spinb](){ for(auto f: OpenedFiles) f->MoveOffsets(Spina->GetValue(), Spinb->GetValue()); desktop.Remove(MoveByWindow); MoveByWindow = 0; } );
