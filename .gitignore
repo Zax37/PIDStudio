@@ -1,6 +1,6 @@
-*.o
-*.depend
-*.layout
-*.res
-.vs
+.idea
 build
+imgui.ini
+settings.ini
+locale/**/*.mo
+locale/**/*.po~

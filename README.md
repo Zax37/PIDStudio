@@ -1,12 +1,10 @@
 ![](https://github.com/Zax37/PIDStudio/blob/master/logo.png)
 
-####About
+#### About
 
-Graphic editor which operates on PID files(used by old WAP32 games like Claw or Gruntz).<br>
-Currently it allows You to convert files from one palette to another and move its offsets.
-
+Graphic editor with main focus on PID files(used by old WAP32 games like Claw or Gruntz).<br>
  
-####License
+#### License
 
-Both executable and source files are totally free for personal uses.<br>
-Created thanks to SFML & SFGUI. Batteries not included.
+Both executable and source code are totally free for any personal use.<br>
+For more details please refer to licenses of dependency libraries.

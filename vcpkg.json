@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+	"sfml",
+	"gettext",
+	"tinyfiledialogs",
+	"efsw"
+  ]
+}
