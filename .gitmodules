@@ -15,3 +15,6 @@
 [submodule "mINI"]
 	path = mINI
 	url = https://github.com/metayeti/mINI
+[submodule "fmt"]
+	path = fmt
+	url = https://github.com/fmtlib/fmt

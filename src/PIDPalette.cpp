@@ -1,9 +1,16 @@
 #include "PIDPalette.h"
 
+#include <algorithm>
+
 #ifdef DEBUG
 #include <iostream>
-#include <format>
+#include <fmt/core.h>
 #endif // DEBUG
+
+PIDPalette::PIDPalette(const unsigned char* ptr)
+{
+    std::copy(ptr, ptr+sizeof(data), (unsigned char*)data);
+}
 
 bool PIDPalette::loadFromStream(std::ifstream& stream)
 {
@@ -22,7 +29,7 @@ void PIDPalette::printDebug() const
     int z = 0;
     for (int i = 0; i < 256; i++) {
         for (int j = 0; j < 3; j++) {
-            std::cout << std::format("{:#04x}, ", (int)data[i][j]);
+            std::cout << fmt::format("{:#04x}, ", (int)data[i][j]);
             if (++z == 12) {
                 z = 0;
                 std::cout << std::endl;

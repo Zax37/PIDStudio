@@ -1,6 +1,15 @@
+.vs
+.vscode
 .idea
+
+CMakeCache.txt
+CMakeFiles
+vcpkg-manifest-install.log
+vcpkg_installed
+
 build
 imgui.ini
 settings.ini
+
 locale/**/*.mo
 locale/**/*.po~

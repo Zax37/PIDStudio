@@ -10,8 +10,6 @@
 class PIDStudio;
 class PIDPalette;
 
-#define byte unsigned char
-
 class PIDFile : public File {
     enum FLAGS {
         Flag_Transparency = 1,
@@ -26,6 +24,7 @@ class PIDFile : public File {
 
 public:
     PIDFile(PIDStudio* app) : app(app) {};
+    ~PIDFile() { delete[] data; }
     bool loadFromFile(std::filesystem::path path) override;
     bool loadFromStream(std::ifstream& stream) override;
 
@@ -48,7 +47,7 @@ private:
     bool isModified = false;
     int width, height, magic, offsetX, offsetY, unknown[2];
     FLAGS flags;
-    std::shared_ptr<byte[]> data;
+    uint8_t* data = nullptr;
     std::shared_ptr<PIDPalette> palette;
     std::string name;
     std::string windowName;

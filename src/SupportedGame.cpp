@@ -21,7 +21,7 @@ void SupportedGame::initializeLibrary(std::shared_ptr<AssetLibrary::TreeNode> ro
     std::sort(root->children.begin(), root->children.end(), sortElements);
 }
 
-const std::string& SupportedGame::getNames(std::vector<std::shared_ptr<SupportedGame>> games) {
+std::string SupportedGame::getNames(std::vector<std::shared_ptr<SupportedGame>> games) {
     switch (games.size()) {
     case 0:
         return "";

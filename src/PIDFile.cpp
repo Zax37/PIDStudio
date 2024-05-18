@@ -31,12 +31,12 @@ bool PIDFile::loadFromStream(std::ifstream& stream) {
         stream.seekg(32);
     }
 
-    data = std::make_shared<byte[]>(width * height);
-    byte* outPtr = data.get();
-    byte* endPtr = outPtr + width * height;
+    data = new uint8_t[width * height];
+    uint8_t* outPtr = data;
+    uint8_t* endPtr = outPtr + width * height;
 
     int x = 0, y = 0, length;
-    byte currentByte;
+    uint8_t currentByte;
 
     auto outputCurrentByte = [&](){ *outPtr++ = currentByte; };
     auto fillWithCurrentByte = [&]() { memset(outPtr, currentByte, length); outPtr += length; };

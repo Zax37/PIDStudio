@@ -5,7 +5,7 @@
 
 #include "games/Claw.h"
 
-#include <format>
+#include <fmt/core.h>
 #include <libintl.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
 
@@ -396,7 +396,7 @@ void PIDStudio::metadataWindow()
     if (ImGui::Begin(_("Metadata"))) {
         if (currentlyFocusedFile) {
             int* userData = currentlyFocusedFile->getUserData();
-            ImGui::Text(std::format("{}: {}x{}\n{}: {}, {}\n{}: {}, {}\n{}:\n{}",
+            ImGui::Text(fmt::format("{}: {}x{}\n{}: {}, {}\n{}: {}, {}\n{}:\n{}",
                 _("Image size"), currentlyFocusedFile->getWidth(), currentlyFocusedFile->getHeight(),
                 _("Offset"), currentlyFocusedFile->getOffsetX(), currentlyFocusedFile->getOffsetY(),
                 _("User values"), userData[0], userData[1],
@@ -499,7 +499,7 @@ void PIDStudio::addLibraryDialog()
         return;
     }
 
-    std::string message = std::format("{} {}.", _("Looks like you are trying to add a game that is not supported. Currently supported games:"), SupportedGame::getNames(supportedGames));
+    std::string message = fmt::format("{} {}.", _("Looks like you are trying to add a game that is not supported. Currently supported games:"), SupportedGame::getNames(supportedGames));
     tinyfd_messageBox(_("Game not recognized"), message.c_str(), "ok", "error", 1);
 }
 

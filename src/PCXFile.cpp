@@ -15,4 +15,6 @@ bool PCXFile::loadFromStream(std::ifstream& stream) {
     stream.seekg(-768, std::ios_base::end);
     palette = std::make_shared<PIDPalette>();
     palette->loadFromStream(stream);
+
+    return true;
 }

@@ -1,15 +1,30 @@
 {
-  "version": 2,
-
-  "configurePresets": [
-    {
-      "name": "default",
-      "generator": "Visual Studio 17 2022",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-		"VCPKG_TARGET_TRIPLET": "x64-windows-static"
-      }
-    }
-  ]
+	"version": 2,
+	"configurePresets": [
+		{
+			"name": "default",
+			"generator": "Visual Studio 17 2022",
+			"binaryDir": "${sourceDir}/build",
+			"cacheVariables": {
+				"CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+				"VCPKG_TARGET_TRIPLET": "x64-windows-static"
+			}
+		},
+		{
+			"name": "linux-wsl",
+			"inherits": "default",
+			"generator": "Unix Makefiles",
+			"vendor": {
+				"microsoft.com/VisualStudioSettings/CMake/1.0": {
+					"hostOS": [ "Linux" ]
+				},
+				"microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
+					"sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
+				}
+			},
+			"cacheVariables": {
+				"VCPKG_TARGET_TRIPLET": "x64-linux"
+			}
+		}
+	]
 }

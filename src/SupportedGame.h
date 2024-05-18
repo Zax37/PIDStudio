@@ -17,7 +17,7 @@ public:
 	const char* getIniKey() const { return iniKey; }
 	const char* getExeName() const { return exeName; }
 
-	static const std::string& getNames(std::vector<std::shared_ptr<SupportedGame>> games);
+	static std::string getNames(std::vector<std::shared_ptr<SupportedGame>> games);
 
 protected:
 	PIDStudio* app;

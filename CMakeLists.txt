@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.22)
 
 project(PIDStudio LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 set(SOURCE_FILES
     src/main.cpp
@@ -47,7 +47,7 @@ if(MSVC)
         $<$<CONFIG:Release>:/MT> #--|
     )
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /Od")
-endif()
+endif(MSVC)
 
 find_package(SFML 2.5 COMPONENTS graphics window system CONFIG REQUIRED)
 set(SFML_LIBS sfml-graphics sfml-system sfml-window)
@@ -57,8 +57,10 @@ set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/imgui)
 add_subdirectory(imgui-sfml EXCLUDE_FROM_ALL)
 
 find_package(Intl REQUIRED)
-find_package(tinyfiledialogs)
-find_package(efsw)
+find_package(tinyfiledialogs REQUIRED)
+find_package(efsw REQUIRED)
+
+add_subdirectory(fmt EXCLUDE_FROM_ALL)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADERS} ${RESOURCE_FILES})
 target_link_libraries(
@@ -68,6 +70,7 @@ target_link_libraries(
 	Intl::Intl
 	tinyfiledialogs::tinyfiledialogs
 	efsw::efsw
+	fmt::fmt
 )
 target_include_directories(
 	${PROJECT_NAME} PRIVATE
@@ -75,8 +78,14 @@ target_include_directories(
 	mINI/src
 )
 
+if (UNIX)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+	find_package(Threads REQUIRED)
+	target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+endif (UNIX)
+
 if(MSVC)
 	set_target_properties(
 		${PROJECT_NAME} PROPERTIES
 		VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)..\\")
-endif()
+endif(MSVC)

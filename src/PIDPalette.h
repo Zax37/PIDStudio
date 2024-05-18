@@ -8,7 +8,7 @@ class PIDPalette : public File
 {
 public:
     PIDPalette() {};
-    PIDPalette(const unsigned char* ptr) { std::memcpy(data, ptr, sizeof(data)); };
+    PIDPalette(const unsigned char* ptr);
 
     sf::Color getColor(int i, bool treatFirstAsTransparent = true) const;
     // unsigned char FindColor(sf::Color color);
