@@ -328,6 +328,8 @@ void PIDStudio::openedFilesWindows()
         case CLOSE:
             filesToClose.insert(openedLibraryFile);
             break;
+        default:
+            break;
         }
     }
 
@@ -347,7 +349,7 @@ PIDStudio::OPENED_FILE_WINDOW_RESULT PIDStudio::openedFileWindow(std::shared_ptr
     std::string windowName = isLibraryFile ? "[L] " + file->getName() + ASSET_LIBRARY_WINDOW_ID : file->getWindowName();
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
 
-    bool didNotCloseWindow, didClickKeepLibraryFileOpen; // outputs from UI library
+    bool didNotCloseWindow = true, didClickKeepLibraryFileOpen = false; // outputs from UI library
     ImGui::Begin(windowName.c_str(), flags, &didNotCloseWindow, isLibraryFile ? &didClickKeepLibraryFileOpen : NULL);
     if (ImGui::BeginPopupContextItem()) {
         closeContextMenu();
