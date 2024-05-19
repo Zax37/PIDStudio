@@ -6,8 +6,8 @@
 
 #include "../assets/claw_game.pal.h"
 
-void initializeStatesPalettes(std::shared_ptr<AssetLibrary::TreeNode> statesDirectory) {
-    static const char* attractScreensName[] = { "ATTRACT", "SCREENS", 0 };
+void initializeStatesPalettes(const std::shared_ptr<AssetLibrary::TreeNode>& statesDirectory) {
+    static const char* attractScreensName[] = { "ATTRACT", "SCREENS", nullptr };
     auto attractScreensDirectory = statesDirectory->resolve(attractScreensName);
 
     if (!attractScreensDirectory) return;
@@ -17,7 +17,7 @@ void initializeStatesPalettes(std::shared_ptr<AssetLibrary::TreeNode> statesDire
     auto bootyDirectory = statesDirectory->resolve("BOOTY");
     if (!bootyDirectory) return;
 
-    static const char* imagesMappieceName[] = { "IMAGES", "MAPPIECE", 0 };
+    static const char* imagesMappieceName[] = { "IMAGES", "MAPPIECE", nullptr };
     auto imagesMappieceDirectory = bootyDirectory->resolve(imagesMappieceName);
 
     if (!imagesMappieceDirectory || imagesMappieceDirectory->children.size() < 14) return;
@@ -31,8 +31,7 @@ void initializeStatesPalettes(std::shared_ptr<AssetLibrary::TreeNode> statesDire
         stream << "LEVEL" << std::setfill('0') << std::setw(3) << (i + 1);
         std::string levelNameStr = stream.str();
 
-        const char* levelName[] = { levelNameStr.c_str(), 0 };
-        auto levelDirectory = imagesMappieceDirectory->resolve(levelName);
+        auto levelDirectory = imagesMappieceDirectory->resolve(levelNameStr.c_str());
 
         if (!levelDirectory) continue;
 
@@ -43,7 +42,7 @@ void initializeStatesPalettes(std::shared_ptr<AssetLibrary::TreeNode> statesDire
     bootyDirectory->palette = screensDirectory->children[0]->palette;
 }
 
-void Claw::initializeLibrary(std::shared_ptr<AssetLibrary::TreeNode> root) {
+void Claw::initializeLibrary(const std::shared_ptr<AssetLibrary::TreeNode>& root) {
     SupportedGame::initializeLibrary(root);
 
     for (const auto& node : root->children) {

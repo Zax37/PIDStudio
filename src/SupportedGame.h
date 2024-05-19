@@ -11,13 +11,13 @@ public:
 	SupportedGame(PIDStudio* app, const char* name, const char* iniKey, const char* exeName)
 		: app(app), name(name), iniKey(iniKey), exeName(exeName) {};
 
-	virtual void initializeLibrary(std::shared_ptr<AssetLibrary::TreeNode> root);
+	virtual void initializeLibrary(const std::shared_ptr<AssetLibrary::TreeNode>& root);
 
-	const char* getName() const { return name; }
-	const char* getIniKey() const { return iniKey; }
-	const char* getExeName() const { return exeName; }
+	[[nodiscard]] const char* getName() const { return name; }
+	[[nodiscard]] const char* getIniKey() const { return iniKey; }
+	[[nodiscard]] const char* getExeName() const { return exeName; }
 
-	static std::string getNames(std::vector<std::shared_ptr<SupportedGame>> games);
+	static std::string getNames(const std::vector<std::shared_ptr<SupportedGame>>& games);
 
 protected:
 	PIDStudio* app;

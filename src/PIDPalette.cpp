@@ -63,6 +63,6 @@ const sf::Texture& PIDPalette::getTexture()
 sf::Color PIDPalette::getColor(int i, bool treatFirstAsTransparent) const
 {
     if (i || !treatFirstAsTransparent)
-        return sf::Color(data[i][0], data[i][1], data[i][2]);
+        return {data[i][0], data[i][1], data[i][2]};
     else return sf::Color::Transparent;
 }

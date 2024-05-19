@@ -18,3 +18,7 @@ bool PCXFile::loadFromStream(std::ifstream& stream) {
 
     return true;
 }
+
+const std::shared_ptr<PIDPalette>& PCXFile::getPalette() const {
+    return palette;
+}

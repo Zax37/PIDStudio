@@ -25,8 +25,8 @@ public:
 	~PIDStudio();
 
 	int run();
-	void openLibraryFile(std::shared_ptr<AssetLibrary::TreeNode> node, bool inSeparateWindow = false);
-	void libraryEntryContextMenu(std::shared_ptr<AssetLibrary::TreeNode> node, bool isLeaf);
+	void openLibraryFile(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool inSeparateWindow = false);
+	void libraryEntryContextMenu(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool isLeaf);
 	std::shared_ptr<PIDPalette> getDefaultPalette() { return defaultPalette; }
 
 private:
@@ -45,13 +45,13 @@ private:
 	std::shared_ptr<PIDPalette> currentPalette;
 	std::shared_ptr<PIDPalette> defaultPalette;
 
-	PIDFile* bringFocusTo;
+	PIDFile* bringFocusTo = nullptr;
 
-	ImGuiID dockspaceId,
-			dockspaceIdLeft,
-			dockspaceIdRight,
-			dockspaceIdRightTop,
-			dockspaceIdRightBottom;
+	ImGuiID dockspaceId{},
+			dockspaceIdLeft{},
+			dockspaceIdRight{},
+			dockspaceIdRightTop{},
+			dockspaceIdRightBottom{};
 
 	void menuBar();
 	void toolBar();
@@ -64,14 +64,14 @@ private:
 	void saveAsContextMenu();
 
 	void openedFilesWindows();
-	OPENED_FILE_WINDOW_RESULT openedFileWindow(std::shared_ptr<PIDFile> file);
+	OPENED_FILE_WINDOW_RESULT openedFileWindow(const std::shared_ptr<PIDFile>& file);
 
-	void closeFile(std::shared_ptr<PIDFile> file);
+	void closeFile(const std::shared_ptr<PIDFile>& file);
 	void closeAllFiles();
 
 	void openPidFileDialog();
 	void addLibraryDialog();
-	void addLibrary(std::filesystem::path& path, std::shared_ptr<SupportedGame> game);
-	bool isFileAlreadyOpen(const std::filesystem::path& path, PIDFile** outFilePtr = NULL);
-	void openAllFiles(std::shared_ptr<AssetLibrary::TreeNode> node);
+	void addLibrary(std::filesystem::path& path, const std::shared_ptr<SupportedGame>& game);
+	bool isFileAlreadyOpen(const std::filesystem::path& path, PIDFile** outFilePtr = nullptr);
+	void openAllFiles(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node);
 };

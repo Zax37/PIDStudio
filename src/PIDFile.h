@@ -23,9 +23,9 @@ class PIDFile : public File {
     };
 
 public:
-    PIDFile(PIDStudio* app) : app(app) {};
+    explicit PIDFile(PIDStudio* app) : app(app) {};
     ~PIDFile() { delete[] data; }
-    bool loadFromFile(std::filesystem::path path) override;
+    bool loadFromFile(const std::filesystem::path& filepath) override;
     bool loadFromStream(std::ifstream& stream) override;
 
     const std::string& getName() const { return name; }
@@ -35,9 +35,9 @@ public:
     int getWidth() const { return width; }
     int getHeight() const { return height; }
     std::shared_ptr<PIDPalette> getPalette() const { return palette; }
-    void setPalette(std::shared_ptr<PIDPalette> palette) { this->palette = palette; }
-    int getOffsetX() { return offsetX; };
-    int getOffsetY() { return offsetY; };
+    void setPalette(const std::shared_ptr<PIDPalette>& p) { palette = p; requiresTextureUpdate = true; }
+    int getOffsetX() const { return offsetX; };
+    int getOffsetY() const { return offsetY; };
     int* getUserData() { return unknown; };
     FLAGS getFlags() { return flags; };
     std::string getFlagsDescription();

@@ -7,8 +7,8 @@
 class PIDPalette : public File
 {
 public:
-    PIDPalette() {};
-    PIDPalette(const unsigned char* ptr);
+    PIDPalette() = default;
+    explicit PIDPalette(const unsigned char* ptr);
 
     sf::Color getColor(int i, bool treatFirstAsTransparent = true) const;
     // unsigned char FindColor(sf::Color color);

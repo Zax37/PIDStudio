@@ -7,12 +7,12 @@
 #include <iostream>
 #endif // DEBUG
 
-bool PIDFile::loadFromFile(std::filesystem::path path) {
-    this->path = path;
-    name = path.filename().string();
-    windowName = name + "###" + path.string();
+bool PIDFile::loadFromFile(const std::filesystem::path& filepath) {
+    this->path = filepath;
+    name = filepath.filename().string();
+    windowName = name + "###" + filepath.string();
 
-    return File::loadFromFile(path);
+    return File::loadFromFile(filepath);
 }
 
 bool PIDFile::loadFromStream(std::ifstream& stream) {
@@ -35,7 +35,7 @@ bool PIDFile::loadFromStream(std::ifstream& stream) {
     uint8_t* outPtr = data;
     uint8_t* endPtr = outPtr + width * height;
 
-    int x = 0, y = 0, length;
+    int length;
     uint8_t currentByte;
 
     auto outputCurrentByte = [&](){ *outPtr++ = currentByte; };
@@ -88,7 +88,7 @@ bool PIDFile::loadFromStream(std::ifstream& stream) {
 const sf::Texture& PIDFile::getTexture()
 {
     if (requiresTextureUpdate) {
-        std::shared_ptr<PIDPalette> palette = this->palette ? this->palette : app->getDefaultPalette();
+        const std::shared_ptr<PIDPalette>& imagePalette = palette ? palette : app->getDefaultPalette();
 
         sf::Image img;
         img.create(width, height);
@@ -96,7 +96,7 @@ const sf::Texture& PIDFile::getTexture()
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++)
             {
-                img.setPixel(x, y, palette->getColor(data[y * width + x]));
+                img.setPixel(x, y, imagePalette->getColor(data[y * width + x]));
             }
         }
 

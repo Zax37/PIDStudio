@@ -17,6 +17,6 @@ std::ofstream& operator<<(std::ofstream& ofs, const T& data) {
 
 class File {
 public:
-    virtual bool loadFromFile(std::filesystem::path path);
-    virtual bool loadFromStream(std::ifstream& stream) { return 0; };
+    virtual bool loadFromFile(const std::filesystem::path& path);
+    virtual bool loadFromStream(std::ifstream& stream) { return false; };
 };

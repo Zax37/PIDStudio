@@ -8,7 +8,7 @@
 class PIDPalette;
 class SupportedGame;
 
-class AssetLibrary : public efsw::FileWatchListener
+class AssetLibrary : public efsw::FileWatchListener, public std::enable_shared_from_this<AssetLibrary>
 {
 public:
     struct TreeNode {
@@ -22,14 +22,16 @@ public:
         std::shared_ptr<TreeNode> resolve(const char* path);
         std::shared_ptr<TreeNode> resolve(const char** path);
     };
-    typedef void (*FileHandler)(std::shared_ptr<AssetLibrary::TreeNode>);
+    typedef void (*FileHandler)(const std::shared_ptr<AssetLibrary::TreeNode>&);
 
-    AssetLibrary(class PIDStudio* app, std::filesystem::path path, std::shared_ptr<SupportedGame> game);
+    AssetLibrary(class PIDStudio* app, const std::filesystem::path& path, const std::shared_ptr<SupportedGame>& game);
 
     void displayContent();
     void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) override;
 
     void rebuildTreeIfRequired();
+    bool hasFilepath(const std::filesystem::path& filepath, std::shared_ptr<AssetLibrary::TreeNode>& outFoundNode);
+    static std::shared_ptr<PIDPalette> inferPalette(const std::shared_ptr<AssetLibrary::TreeNode>& node) ;
 private:
     static std::unordered_map<std::string, FileHandler> supportedFileTypes;
 
@@ -40,7 +42,5 @@ private:
     std::shared_ptr<SupportedGame> game;
     bool requiresRebuilding;
 
-    void populateTree(std::filesystem::path path, std::shared_ptr<AssetLibrary::TreeNode> node);
-
-    void displayContent(std::shared_ptr<AssetLibrary::TreeNode> node);
+    static void populateTree(const std::filesystem::path& path, const std::shared_ptr<AssetLibrary::TreeNode>& node);
 };

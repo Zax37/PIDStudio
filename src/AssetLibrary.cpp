@@ -1,3 +1,5 @@
+#include "AssetLibrary.h"
+
 #include "PIDStudio.h"
 #include "PIDPalette.h"
 #include "PCXFile.h"
@@ -14,14 +16,14 @@
 #include <iostream>
 #endif // DEBUG
 
-void palFileHandler(std::shared_ptr<AssetLibrary::TreeNode> node) {
+void palFileHandler(const std::shared_ptr<AssetLibrary::TreeNode> &node) {
     node->palette = std::make_shared<PIDPalette>();
     if (node->palette->loadFromFile(node->path)) {
         node->parent->palette = node->palette;
     }
 }
 
-void pcxFileHandler(std::shared_ptr<AssetLibrary::TreeNode> node) {
+void pcxFileHandler(const std::shared_ptr<AssetLibrary::TreeNode> &node) {
     std::shared_ptr<PCXFile> pcxFile = std::make_shared<PCXFile>();
     if (pcxFile->loadFromFile(node->path)) {
         node->palette = pcxFile->getPalette();
@@ -29,20 +31,19 @@ void pcxFileHandler(std::shared_ptr<AssetLibrary::TreeNode> node) {
     }
 }
 
-void pidFileHandler(std::shared_ptr<AssetLibrary::TreeNode> node) {
+void pidFileHandler(const std::shared_ptr<AssetLibrary::TreeNode> &node) {
     node->isHidden = false;
 }
 
 std::unordered_map<std::string, AssetLibrary::FileHandler> AssetLibrary::supportedFileTypes = {
-    {".pal", palFileHandler },
-    {".pcx", pcxFileHandler },
-    {".pid", pidFileHandler }
+        {".pal", palFileHandler},
+        {".pcx", pcxFileHandler},
+        {".pid", pidFileHandler}
 };
 
-std::shared_ptr<AssetLibrary::TreeNode> AssetLibrary::TreeNode::resolve(const char* path)
-{
-    for (auto node : children) {
-        if (stringEquals(node->name, path, false)) {
+std::shared_ptr<AssetLibrary::TreeNode> AssetLibrary::TreeNode::resolve(const char *resolvePath) {
+    for (auto node: children) {
+        if (stringEquals(node->name, resolvePath, false)) {
             return node;
         }
     }
@@ -50,22 +51,21 @@ std::shared_ptr<AssetLibrary::TreeNode> AssetLibrary::TreeNode::resolve(const ch
     return nullptr;
 }
 
-std::shared_ptr<AssetLibrary::TreeNode> AssetLibrary::TreeNode::resolve(const char** paths)
-{
-    std::shared_ptr<AssetLibrary::TreeNode> node = resolve(*paths++);
-    while (*paths && node) {
-        node = node->resolve(*paths++);
+std::shared_ptr<AssetLibrary::TreeNode> AssetLibrary::TreeNode::resolve(const char **resolvePaths) {
+    std::shared_ptr<AssetLibrary::TreeNode> node = resolve(*resolvePaths++);
+    while (*resolvePaths && node) {
+        node = node->resolve(*resolvePaths++);
     }
 
     return node;
 }
 
-AssetLibrary::AssetLibrary(PIDStudio* app, std::filesystem::path path, std::shared_ptr<SupportedGame> game) : app(app), path(path), game(game)
-{
+AssetLibrary::AssetLibrary(PIDStudio *app, const std::filesystem::path &path,
+                           const std::shared_ptr<SupportedGame> &game) : app(app), path(path), game(game) {
     requiresRebuilding = true;
     rebuildTreeIfRequired();
 
-    efsw::WatchID watchID = fileWatcher.addWatch(path.string(), this, true);
+    fileWatcher.addWatch(path.string(), this, true);
     fileWatcher.watch();
 }
 
@@ -84,15 +84,16 @@ void AssetLibrary::rebuildTreeIfRequired() {
     requiresRebuilding = false;
 }
 
-void AssetLibrary::populateTree(std::filesystem::path rootPath, std::shared_ptr<AssetLibrary::TreeNode> rootNode) {
+void AssetLibrary::populateTree(const std::filesystem::path &rootPath,
+                                const std::shared_ptr<AssetLibrary::TreeNode> &rootNode) {
     std::stack<std::pair<std::filesystem::path, std::shared_ptr<TreeNode>>> stack;
-    stack.push({ rootPath, rootNode });
+    stack.emplace(rootPath, rootNode);
 
     while (!stack.empty()) {
         const auto [parentPath, parentNode] = stack.top();
         stack.pop();
 
-        for (const auto& entry : std::filesystem::directory_iterator(parentPath)) {
+        for (const auto &entry: std::filesystem::directory_iterator(parentPath)) {
             std::shared_ptr<AssetLibrary::TreeNode> childNode = std::make_shared<AssetLibrary::TreeNode>();
             childNode->parent = parentNode;
             childNode->path = entry.path();
@@ -100,7 +101,7 @@ void AssetLibrary::populateTree(std::filesystem::path rootPath, std::shared_ptr<
             parentNode->children.emplace_back(childNode);
 
             if (entry.is_directory()) {
-                stack.push({ childNode->path, childNode });
+                stack.emplace(childNode->path, childNode);
             } else if (entry.is_regular_file()) {
                 std::string ext = childNode->path.extension().string();
                 std::transform(ext.begin(), ext.end(), ext.begin(), charToLower);
@@ -121,40 +122,53 @@ void AssetLibrary::populateTree(std::filesystem::path rootPath, std::shared_ptr<
     }
 }
 
-void AssetLibrary::displayContent() { displayContent(root); }
+void AssetLibrary::displayContent() {
+    std::stack<std::shared_ptr<TreeNode>> stack;
+    stack.emplace(root);
 
-void AssetLibrary::displayContent(std::shared_ptr<AssetLibrary::TreeNode> node)
-{
-    if (node->isHidden) return;
+    while (!stack.empty()) {
+        const auto node = stack.top();
+        stack.pop();
 
-    bool isLeaf = node->children.empty();
-    ImGuiTreeNodeFlags flags = isLeaf ? ImGuiTreeNodeFlags_Leaf : ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-
-    bool isOpen = ImGui::TreeNodeEx(node->name.c_str(), flags);
-
-    if (ImGui::GetCurrentContext()->LastItemData.StatusFlags & ImGuiItemStatusFlags_HoveredRect || ImGui::IsPopupOpen(node->name.c_str())) {
-        if (ImGui::BeginPopupContextItem(node->name.c_str())) {
-            app->libraryEntryContextMenu(node, isLeaf);
-            ImGui::EndPopup();
+        if (!node) {
+            ImGui::TreePop();
+            continue;
         }
-    }
+        if (node->isHidden) { continue; }
 
-    if (isOpen) {
-        if (isLeaf) {
-            if (ImGui::GetCurrentContext()->LastItemData.StatusFlags & ImGuiItemStatusFlags_ToggledSelection) {
-                app->openLibraryFile(node);
-            }
-        } else {
-            for (const auto& child : node->children) {
-                displayContent(child);
+        bool isLeaf = node->children.empty();
+        ImGuiTreeNodeFlags flags = isLeaf ? ImGuiTreeNodeFlags_Leaf
+                                          : ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+
+        bool isOpen = ImGui::TreeNodeEx(node->name.c_str(), flags);
+
+        if (ImGui::GetCurrentContext()->LastItemData.StatusFlags & ImGuiItemStatusFlags_HoveredRect
+            || ImGui::IsPopupOpen(node->name.c_str())) {
+            if (ImGui::BeginPopupContextItem(node->name.c_str())) {
+                app->libraryEntryContextMenu(shared_from_this(), node, isLeaf);
+                ImGui::EndPopup();
             }
         }
-        ImGui::TreePop();
+
+        if (isOpen) {
+            if (isLeaf) {
+                if (ImGui::GetCurrentContext()->LastItemData.StatusFlags & ImGuiItemStatusFlags_ToggledSelection) {
+                    app->openLibraryFile(shared_from_this(), node);
+                }
+                ImGui::TreePop();
+            } else {
+                stack.emplace(nullptr); // delay ImGui::TreePop() to remain correct structure
+                for (auto it = node->children.rbegin(); it != node->children.rend(); ++it) {
+                    stack.emplace(*it);
+                }
+            }
+        }
     }
 }
 
-inline void AssetLibrary::handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) {
-    
+inline void AssetLibrary::handleFileAction(efsw::WatchID watchid, const std::string &dir, const std::string &filename,
+                                           efsw::Action action, std::string oldFilename) {
+
     // TODO: could simply add/remove nodes instead of rebuilding entire tree, but I'll start with that as simpler approach
     requiresRebuilding = true;
 
@@ -191,4 +205,32 @@ inline void AssetLibrary::handleFileAction(efsw::WatchID watchid, const std::str
         std::cout << "Should never happen!" << std::endl;
     }
     */
+}
+
+bool AssetLibrary::hasFilepath(const std::filesystem::path &filepath,
+                               std::shared_ptr<AssetLibrary::TreeNode> &outFoundNode) {
+    auto mismatch = std::mismatch(this->path.begin(), this->path.end(), filepath.begin());
+    bool isFilepathWithinLibrary = mismatch.first == this->path.end();
+
+    if (isFilepathWithinLibrary) {
+        outFoundNode = root;
+        for (auto it = mismatch.second; it != filepath.end(); it++) {
+            outFoundNode = outFoundNode->resolve(it->string().c_str());
+            if (!outFoundNode) return false;
+        }
+    }
+
+    return outFoundNode != nullptr;
+}
+
+std::shared_ptr<PIDPalette> AssetLibrary::inferPalette(const std::shared_ptr<AssetLibrary::TreeNode> &node) {
+    std::shared_ptr<PIDPalette> palette = node->palette;
+    std::shared_ptr<AssetLibrary::TreeNode> parent = node->parent;
+
+    while (parent && !palette) {
+        palette = parent->palette;
+        parent = parent->parent;
+    }
+
+    return palette;
 }
