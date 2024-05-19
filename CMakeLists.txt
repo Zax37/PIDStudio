@@ -8,25 +8,22 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 set(SOURCE_FILES
     src/main.cpp
     src/PIDStudio.cpp
-    src/File.cpp
-    src/String.cpp
-    src/PCXFile.cpp
-    src/PIDFile.cpp
-    src/PIDPalette.cpp
-    src/AssetLibrary.cpp
-    src/SupportedGame.cpp
-    src/games/Claw.cpp
-)
-
-set(HEADER_FILES
     src/PIDStudio.h
+    src/File.cpp
     src/File.h
+    src/String.cpp
     src/String.h
+    src/PCXFile.cpp
     src/PCXFile.h
+    src/PIDFile.cpp
     src/PIDFile.h
+    src/PIDPalette.cpp
     src/PIDPalette.h
-    src/AssetLibrary.h
+    src/AssetLibrary.cpp
+	src/AssetLibrary.h
+    src/SupportedGame.cpp
     src/SupportedGame.h
+    src/games/Claw.cpp
     src/games/Claw.h
 )
 
@@ -73,7 +70,7 @@ if(APPLE)
     list(APPEND RESOURCE_FILES "${application_icon}")
 endif(APPLE)
 
-add_executable(${PROJECT_NAME} ${PROJECT_FLAGS} ${SOURCE_FILES} ${HEADERS} ${RESOURCE_FILES})
+add_executable(${PROJECT_NAME} ${PROJECT_FLAGS} ${SOURCE_FILES} ${RESOURCE_FILES})
 target_link_libraries(
 	${PROJECT_NAME} PRIVATE
 	${SFML_LIBS}

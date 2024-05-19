@@ -3,8 +3,8 @@
 .idea
 **/.DS_Store
 
-CMakeCache.txt
-CMakeFiles
+**/CMakeCache.txt
+**/CMakeFiles
 vcpkg-manifest-install.log
 vcpkg_installed
 
