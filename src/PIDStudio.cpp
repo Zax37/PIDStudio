@@ -194,6 +194,11 @@ int PIDStudio::run(){
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
 
+        if (libraryToClose) {
+            settings[ASSET_LIBRARIES_INI_KEY].remove(libraryToClose->getIniKey());
+            assetLibraries.erase(std::find(assetLibraries.begin(), assetLibraries.end(), libraryToClose));
+            libraryToClose.reset();
+        }
         // react to filesystem changes
         for (auto const& library : assetLibraries) {
             library->rebuildTreeIfRequired();
@@ -518,11 +523,15 @@ void PIDStudio::addLibraryDialog()
     tinyfd_messageBox(_("Game not recognized"), message.c_str(), "ok", "error", 1);
 }
 
-void PIDStudio::libraryEntryContextMenu(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool isLeaf)
+void PIDStudio::libraryEntryContextMenu(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool isLeaf, bool isRoot)
 {
     if (isLeaf) {
         saveAsContextMenu();
     } else {
+        if (isRoot) {
+            if (ImGui::MenuItem(_("Remove from library"))) { libraryToClose = library; }
+            ImGui::Separator();
+        }
         if (ImGui::MenuItem(_("Open all"))) { openAllFiles(library, node); }
     }
 }

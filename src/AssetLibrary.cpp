@@ -145,7 +145,7 @@ void AssetLibrary::displayContent() {
         if (ImGui::GetCurrentContext()->LastItemData.StatusFlags & ImGuiItemStatusFlags_HoveredRect
             || ImGui::IsPopupOpen(node->name.c_str())) {
             if (ImGui::BeginPopupContextItem(node->name.c_str())) {
-                app->libraryEntryContextMenu(shared_from_this(), node, isLeaf);
+                app->libraryEntryContextMenu(shared_from_this(), node, isLeaf, node == root);
                 ImGui::EndPopup();
             }
         }
@@ -233,4 +233,8 @@ std::shared_ptr<PIDPalette> AssetLibrary::inferPalette(const std::shared_ptr<Ass
     }
 
     return palette;
+}
+
+const char *AssetLibrary::getIniKey() const {
+    return game->getIniKey();
 }

@@ -26,7 +26,7 @@ public:
 
 	int run();
 	void openLibraryFile(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool inSeparateWindow = false);
-	void libraryEntryContextMenu(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool isLeaf);
+	void libraryEntryContextMenu(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node, bool isLeaf, bool isRoot);
 	std::shared_ptr<PIDPalette> getDefaultPalette() { return defaultPalette; }
 
 private:
@@ -41,6 +41,7 @@ private:
 	std::shared_ptr<PIDFile> openedLibraryFile;
 	std::shared_ptr<PIDFile> currentlyFocusedFile;
 	std::set<std::shared_ptr<PIDFile>> filesToClose;
+    std::shared_ptr<AssetLibrary> libraryToClose;
 
 	std::shared_ptr<PIDPalette> currentPalette;
 	std::shared_ptr<PIDPalette> defaultPalette;

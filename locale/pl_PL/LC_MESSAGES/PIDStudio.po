@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PIDStudio 1.0\n"
 "Report-Msgid-Bugs-To: crew37zax@gmail.com\n"
-"POT-Creation-Date: 2024-05-16 20:36+0200\n"
+"POT-Creation-Date: 2024-05-19 17:18+0200\n"
 "PO-Revision-Date: 2024-05-04 10:09+0200\n"
 "Last-Translator: Zax37 <crew37zax@gmail.com>\n"
 "Language-Team: Polish\n"
@@ -18,107 +18,107 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: src/PIDStudio.cpp:23
+#: src/PIDStudio.cpp:24
 msgid "Claw"
 msgstr "Kapitan Pazur"
 
-#: src/PIDStudio.cpp:23
+#: src/PIDStudio.cpp:24
 msgid "Gruntz"
 msgstr "Gruntz"
 
-#: src/PIDStudio.cpp:23
+#: src/PIDStudio.cpp:24
 msgid "Get Medieval"
 msgstr "Get Medieval"
 
-#: src/PIDStudio.cpp:205 src/PIDStudio.cpp:209 src/PIDStudio.cpp:214
+#: src/PIDStudio.cpp:215 src/PIDStudio.cpp:219 src/PIDStudio.cpp:224
 msgid "File"
 msgstr "Plik"
 
-#: src/PIDStudio.cpp:207
+#: src/PIDStudio.cpp:217
 msgid "New..."
 msgstr "Nowy..."
 
-#: src/PIDStudio.cpp:208 src/PIDStudio.cpp:213
+#: src/PIDStudio.cpp:218 src/PIDStudio.cpp:223
 msgid "Project"
 msgstr "Projekt"
 
-#: src/PIDStudio.cpp:212
+#: src/PIDStudio.cpp:222
 msgid "Open..."
 msgstr "Otwórz..."
 
-#: src/PIDStudio.cpp:224
+#: src/PIDStudio.cpp:234
 msgid "Save"
 msgstr "Zapisz"
 
-#: src/PIDStudio.cpp:226
+#: src/PIDStudio.cpp:236
 msgid "Save all"
 msgstr "Zapisz wszystko"
 
-#: src/PIDStudio.cpp:230
+#: src/PIDStudio.cpp:240
 msgid "Recently opened files"
 msgstr "Ostatnio używane pliki"
 
-#: src/PIDStudio.cpp:234
+#: src/PIDStudio.cpp:244
 msgid "Recently opened projects"
 msgstr "Ostatnio używane projekty"
 
-#: src/PIDStudio.cpp:241
+#: src/PIDStudio.cpp:251
 msgid "Exit"
 msgstr "Zakończ"
 
-#: src/PIDStudio.cpp:381
+#: src/PIDStudio.cpp:396
 msgid "Palette"
 msgstr "Paleta"
 
-#: src/PIDStudio.cpp:390
+#: src/PIDStudio.cpp:405
 msgid "Metadata"
 msgstr "Metadane"
 
-#: src/PIDStudio.cpp:394
+#: src/PIDStudio.cpp:409
 msgid "Image size"
 msgstr "Rozmiar obrazka"
 
-#: src/PIDStudio.cpp:395
+#: src/PIDStudio.cpp:410
 msgid "Offset"
 msgstr "Przesunięcie"
 
-#: src/PIDStudio.cpp:396
+#: src/PIDStudio.cpp:411
 msgid "User values"
 msgstr "Wartości użytkownika"
 
-#: src/PIDStudio.cpp:397
+#: src/PIDStudio.cpp:412
 msgid "Flags"
 msgstr "Flagi"
 
-#: src/PIDStudio.cpp:400
+#: src/PIDStudio.cpp:415
 msgid "No opened files."
 msgstr "Brak otwartych plików."
 
-#: src/PIDStudio.cpp:408
+#: src/PIDStudio.cpp:423
 msgid "Library"
 msgstr "Biblioteka"
 
-#: src/PIDStudio.cpp:411
+#: src/PIDStudio.cpp:426
 msgid "No games in the library."
 msgstr "Brak gier w bibliotece."
 
-#: src/PIDStudio.cpp:412
+#: src/PIDStudio.cpp:427
 msgid "Add a game"
 msgstr "Dodaj grę"
 
-#: src/PIDStudio.cpp:449
+#: src/PIDStudio.cpp:464
 msgid "Open PID file(s)"
 msgstr "Otwórz plik(i) PID"
 
-#: src/PIDStudio.cpp:474
+#: src/PIDStudio.cpp:500
 msgid "Select game directory"
 msgstr "Wybierz folder gry"
 
-#: src/PIDStudio.cpp:488
+#: src/PIDStudio.cpp:514
 msgid "No Assets directory"
 msgstr "Brak folderu Assets"
 
-#: src/PIDStudio.cpp:488
+#: src/PIDStudio.cpp:514
 msgid ""
 "Looks like you are trying to use older version of Claw where assets were "
 "packed inside CLAW.REZ file. Please update to CrazyHook version."
@@ -126,7 +126,7 @@ msgstr ""
 "Wygląda na to, że próbujesz dodać starszą wersję gry, gdzie zasoby były "
 "spakowane w pliku CLAW.REZ. Zaktualizuj grę do wersji CrazyHook."
 
-#: src/PIDStudio.cpp:496
+#: src/PIDStudio.cpp:522
 msgid ""
 "Looks like you are trying to add a game that is not supported. Currently "
 "supported games:"
@@ -134,22 +134,26 @@ msgstr ""
 "Wygląda na to, że próbujesz dodać grę, która aktualnie nie jest wspierana. "
 "Aktualnie wspierane są następujące gry:"
 
-#: src/PIDStudio.cpp:497
+#: src/PIDStudio.cpp:523
 msgid "Game not recognized"
 msgstr "Nie rozpoznano gry"
 
-#: src/PIDStudio.cpp:505
+#: src/PIDStudio.cpp:532
+msgid "Remove from library"
+msgstr "Usuń z biblioteki"
+
+#: src/PIDStudio.cpp:535
 msgid "Open all"
 msgstr "Otwórz wszystko"
 
-#: src/PIDStudio.cpp:519
+#: src/PIDStudio.cpp:562
 msgid "Close"
 msgstr "Zamknij"
 
-#: src/PIDStudio.cpp:526
+#: src/PIDStudio.cpp:569
 msgid "Close all"
 msgstr "Zamknij wszystko"
 
-#: src/PIDStudio.cpp:531
+#: src/PIDStudio.cpp:574
 msgid "Save as..."
 msgstr "Zapisz jako..."

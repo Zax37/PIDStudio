@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PIDStudio 1.0\n"
 "Report-Msgid-Bugs-To: crew37zax@gmail.com\n"
-"POT-Creation-Date: 2024-05-16 20:40+0200\n"
+"POT-Creation-Date: 2024-05-19 17:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,134 +17,138 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/PIDStudio.cpp:23
+#: src/PIDStudio.cpp:24
 msgid "Claw"
 msgstr ""
 
-#: src/PIDStudio.cpp:23
+#: src/PIDStudio.cpp:24
 msgid "Gruntz"
 msgstr ""
 
-#: src/PIDStudio.cpp:23
+#: src/PIDStudio.cpp:24
 msgid "Get Medieval"
 msgstr ""
 
-#: src/PIDStudio.cpp:205 src/PIDStudio.cpp:209 src/PIDStudio.cpp:214
+#: src/PIDStudio.cpp:215 src/PIDStudio.cpp:219 src/PIDStudio.cpp:224
 msgid "File"
 msgstr ""
 
-#: src/PIDStudio.cpp:207
+#: src/PIDStudio.cpp:217
 msgid "New..."
 msgstr ""
 
-#: src/PIDStudio.cpp:208 src/PIDStudio.cpp:213
+#: src/PIDStudio.cpp:218 src/PIDStudio.cpp:223
 msgid "Project"
 msgstr ""
 
-#: src/PIDStudio.cpp:212
+#: src/PIDStudio.cpp:222
 msgid "Open..."
 msgstr ""
 
-#: src/PIDStudio.cpp:224
+#: src/PIDStudio.cpp:234
 msgid "Save"
 msgstr ""
 
-#: src/PIDStudio.cpp:226
+#: src/PIDStudio.cpp:236
 msgid "Save all"
 msgstr ""
 
-#: src/PIDStudio.cpp:230
+#: src/PIDStudio.cpp:240
 msgid "Recently opened files"
 msgstr ""
 
-#: src/PIDStudio.cpp:234
+#: src/PIDStudio.cpp:244
 msgid "Recently opened projects"
 msgstr ""
 
-#: src/PIDStudio.cpp:241
+#: src/PIDStudio.cpp:251
 msgid "Exit"
 msgstr ""
 
-#: src/PIDStudio.cpp:381
+#: src/PIDStudio.cpp:396
 msgid "Palette"
 msgstr ""
 
-#: src/PIDStudio.cpp:390
+#: src/PIDStudio.cpp:405
 msgid "Metadata"
 msgstr ""
 
-#: src/PIDStudio.cpp:394
+#: src/PIDStudio.cpp:409
 msgid "Image size"
 msgstr ""
 
-#: src/PIDStudio.cpp:395
+#: src/PIDStudio.cpp:410
 msgid "Offset"
 msgstr ""
 
-#: src/PIDStudio.cpp:396
+#: src/PIDStudio.cpp:411
 msgid "User values"
 msgstr ""
 
-#: src/PIDStudio.cpp:397
+#: src/PIDStudio.cpp:412
 msgid "Flags"
 msgstr ""
 
-#: src/PIDStudio.cpp:400
+#: src/PIDStudio.cpp:415
 msgid "No opened files."
 msgstr ""
 
-#: src/PIDStudio.cpp:408
+#: src/PIDStudio.cpp:423
 msgid "Library"
 msgstr ""
 
-#: src/PIDStudio.cpp:411
+#: src/PIDStudio.cpp:426
 msgid "No games in the library."
 msgstr ""
 
-#: src/PIDStudio.cpp:412
+#: src/PIDStudio.cpp:427
 msgid "Add a game"
 msgstr ""
 
-#: src/PIDStudio.cpp:449
+#: src/PIDStudio.cpp:464
 msgid "Open PID file(s)"
 msgstr ""
 
-#: src/PIDStudio.cpp:474
+#: src/PIDStudio.cpp:500
 msgid "Select game directory"
 msgstr ""
 
-#: src/PIDStudio.cpp:488
+#: src/PIDStudio.cpp:514
 msgid "No Assets directory"
 msgstr ""
 
-#: src/PIDStudio.cpp:488
+#: src/PIDStudio.cpp:514
 msgid ""
 "Looks like you are trying to use older version of Claw where assets were "
 "packed inside CLAW.REZ file. Please update to CrazyHook version."
 msgstr ""
 
-#: src/PIDStudio.cpp:496
+#: src/PIDStudio.cpp:522
 msgid ""
 "Looks like you are trying to add a game that is not supported. Currently "
 "supported games:"
 msgstr ""
 
-#: src/PIDStudio.cpp:497
+#: src/PIDStudio.cpp:523
 msgid "Game not recognized"
 msgstr ""
 
-#: src/PIDStudio.cpp:505
+#: src/PIDStudio.cpp:532
+msgid "Remove from library"
+msgstr ""
+
+#: src/PIDStudio.cpp:535
 msgid "Open all"
 msgstr ""
 
-#: src/PIDStudio.cpp:519
+#: src/PIDStudio.cpp:562
 msgid "Close"
 msgstr ""
 
-#: src/PIDStudio.cpp:526
+#: src/PIDStudio.cpp:569
 msgid "Close all"
 msgstr ""
 
-#: src/PIDStudio.cpp:531
+#: src/PIDStudio.cpp:574
 msgid "Save as..."
 msgstr ""
