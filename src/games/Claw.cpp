@@ -2,7 +2,7 @@
 
 #include "../String.h"
 #include "../PIDStudio.h"
-#include "../PIDPalette.h"
+#include "../formats/PIDPalette.h"
 
 #include "../assets/claw_game.pal.h"
 

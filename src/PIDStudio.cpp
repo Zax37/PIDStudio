@@ -1,7 +1,9 @@
 #include "PIDStudio.h"
 
-#include "PIDFile.h"
-#include "PIDPalette.h"
+#include "formats/PIDFile.h"
+#include "formats/PIDPalette.h"
+#include "String.h"
+#include "Filters.h"
 
 #include "games/Claw.h"
 
@@ -10,6 +12,7 @@
 #include <libintl.h>
 #include <tinyfiledialogs/tinyfiledialogs.h>
 
+#include "ImGuiExtensions.h"
 #include <imgui-SFML.h>
 #include <SFML/Graphics.hpp>
 #include "imgui_internal.h"
@@ -31,25 +34,28 @@ const char SETTINGS_INI_FILENAME[] = "settings.ini";
 const char ASSET_LIBRARIES_INI_KEY[] = "AssetLibraries";
 const char ASSET_LIBRARY_WINDOW_ID[] = "###AssetLibrary";
 
-// TODO: move out custom extensions to separate file?
-namespace ImGui {
-    inline void CenteredImage(const sf::Texture& texture)
-    {
-        ImVec2 windowSize = GetWindowSize();
-        sf::Vector2u imageSize = texture.getSize();
-        SetCursorPosX((windowSize.x - (float)imageSize.x) * 0.5f);
-        SetCursorPosY((windowSize.y - (float)imageSize.y) * 0.5f + 10.0f);
-        Image(texture);
-    }
+template <bool isMultiSelect, Filter... filters>
+inline const char* openFileDialog(const char* filterName) {
+    static constexpr auto filterPatterns = constexpr_get_filter_patterns<filters...>();
+    static constexpr auto filterPatternsString = constexpr_get_filter_patterns_string<filters...>();
 
-    bool BringFocusTo(ImGuiWindow* window)
-    {
-        if (!window || !window->DockNode || !window->DockNode->TabBar)
-            return false;
+    return tinyfd_openFileDialog(
+        isMultiSelect ? _("Open file(s)") : _("Open file"),
+        nullptr,
+        sizeof...(filters), filterPatterns.data(), std::format("{} ({})", filterName, filterPatternsString.data()).c_str(),
+        isMultiSelect
+    );
+}
+template <Filter... filters>
+inline const char* saveFileDialog(const char* filterName) {
+    static constexpr auto filterPatterns = constexpr_get_filter_patterns<filters...>();
+    static constexpr auto filterPatternsString = constexpr_get_filter_patterns_string<filters...>();
 
-        window->DockNode->TabBar->NextSelectedTabId = window->TabId;
-        return true;
-    }
+    return tinyfd_saveFileDialog(
+        _("Save file"),
+        nullptr,
+        sizeof...(filters), filterPatterns.data(), std::format("{} ({})", filterName, filterPatternsString.data()).c_str()
+    );
 }
 
 PIDStudio::PIDStudio() : mainWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), APPLICATION_NAME) {
@@ -330,9 +336,7 @@ void PIDStudio::openedFilesWindows()
 
         switch (result) {
         case KEEP_OPEN:
-            bringFocusTo = openedLibraryFile.get();
-            openedFiles.push_back(openedLibraryFile);
-            openedLibraryFile.reset();
+            keepLibraryFileOpened();
             break;
         case CLOSE:
             filesToClose.insert(openedLibraryFile);
@@ -396,6 +400,13 @@ void PIDStudio::paletteWindow()
     if (ImGui::Begin(_("Palette"))) {
         std::shared_ptr<PIDPalette> palette = currentPalette ? currentPalette : defaultPalette;
         ImGui::CenteredImage(palette->getTexture());
+
+        if (ImGui::BeginPopupForLastItem("Palette")) {
+            if (ImGui::MenuItem(_("Load from file"))) { loadPaletteFromFile(); }
+            if (ImGui::MenuItem(_("Save to file"))) { savePaletteToFile(); }
+
+            ImGui::EndPopup();
+        }
     }
     ImGui::End();
 }
@@ -458,14 +469,7 @@ void PIDStudio::libraryWindow()
 
 void PIDStudio::openPidFileDialog()
 {
-    const char* filterPattern = "*.pid";
-    const char* filterName = "PID Files";
-    const char* selectedFiles = tinyfd_openFileDialog(
-        _("Open PID file(s)"),
-        nullptr, // default path
-        1, &filterPattern, filterName,
-        1 // multi select
-    );
+    const char* selectedFiles = openFileDialog<true, pidFilter>(_("Image Files"));
 
     if (selectedFiles) {
         std::istringstream stream(selectedFiles);
@@ -540,17 +544,24 @@ void PIDStudio::addLibrary(std::filesystem::path& path, const std::shared_ptr<Su
 {
     std::string pathString = path.string();
     settings[ASSET_LIBRARIES_INI_KEY][game->getIniKey()] = pathString;
-    assetLibraries.emplace_back(std::make_shared<AssetLibrary>(this, path, game));
+
+    auto assetLibrary = std::make_shared<AssetLibrary>(this, path, game);
+    assetLibraries.emplace_back(assetLibrary);
 
     // check if we can infer palette for one of already opened files from the newly added library
     for (const auto& file : openedFiles) {
         if (file->getPalette()) continue;
 
         std::shared_ptr<AssetLibrary::TreeNode> outFoundNode;
-        if (assetLibraries.back()->hasFilepath(file->getPath(), outFoundNode)) {
-            file->setPalette(assetLibraries.back()->inferPalette(outFoundNode));
+        if (assetLibrary->hasFilepath(file->getPath(), outFoundNode)) {
+            const auto& palette = assetLibrary->inferPalette(outFoundNode);
+
+            if (!palette) continue;
+
+            file->setPalette(palette);
+
             if (file == currentlyFocusedFile) {
-                currentPalette = file->getPalette();
+                currentPalette = palette;
             }
         }
     }
@@ -572,6 +583,13 @@ void PIDStudio::closeContextMenu()
 void PIDStudio::saveAsContextMenu()
 {
     if (ImGui::MenuItemEx(_("Save as..."), nullptr, nullptr, false, false)) { /* Do stuff */ }
+}
+
+void PIDStudio::keepLibraryFileOpened()
+{
+    bringFocusTo = openedLibraryFile.get();
+    openedFiles.push_back(openedLibraryFile);
+    openedLibraryFile.reset();
 }
 
 void PIDStudio::closeFile(const std::shared_ptr<PIDFile>& file)
@@ -654,4 +672,29 @@ void PIDStudio::openAllFiles(const std::shared_ptr<AssetLibrary>& library, const
             }
         }
     }
+}
+
+void PIDStudio::loadPaletteFromFile() {
+    const char* selectedFile = openFileDialog<false, palFilter>(_("Palette Files"));
+
+    if (!selectedFile) return;
+
+    currentPalette = std::make_shared<PIDPalette>();
+    currentPalette->loadFromFile(selectedFile);
+
+    if (!currentlyFocusedFile) return;
+
+    currentlyFocusedFile->setPalette(currentPalette);
+
+    if (currentlyFocusedFile == openedLibraryFile) {
+        keepLibraryFileOpened();
+    }
+}
+
+void PIDStudio::savePaletteToFile() {
+    const char* selectedFile = saveFileDialog<palFilter>(_("Palette Files"));
+
+    if (!selectedFile) return;
+
+    (currentPalette ? currentPalette : defaultPalette)->saveToFile(selectedFile);
 }

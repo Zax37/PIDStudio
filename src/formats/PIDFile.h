@@ -1,11 +1,11 @@
 #pragma once
 
-#include "File.h"
+#include "../File.h"
 
-#include <SFML/Graphics/Texture.hpp>
+#include "SFML/Graphics/Texture.hpp"
 
-#include <imgui.h>
-#include <imgui-SFML.h>
+#include "imgui.h"
+#include "imgui-SFML.h"
 
 class PIDStudio;
 class PIDPalette;
@@ -26,7 +26,7 @@ public:
     explicit PIDFile(PIDStudio* app) : app(app) {};
     ~PIDFile() { delete[] data; }
     bool loadFromFile(const std::filesystem::path& filepath) override;
-    bool loadFromStream(std::ifstream& stream) override;
+    bool load(std::istream& stream) override;
 
     const std::string& getName() const { return name; }
     const std::string& getWindowName() const { return windowName; }

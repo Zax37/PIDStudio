@@ -5,25 +5,7 @@
 #ifdef DEBUG
 #include <iostream>
 #include <fmt/core.h>
-#endif // DEBUG
 
-PIDPalette::PIDPalette(const unsigned char* ptr)
-{
-    std::copy(ptr, ptr+sizeof(data), (unsigned char*)data);
-}
-
-bool PIDPalette::loadFromStream(std::ifstream& stream)
-{
-    try {
-        stream >> data;
-        return true;
-    }
-    catch (...) {
-        return false;
-    }
-}
-
-#ifdef DEBUG
 void PIDPalette::printDebug() const
 {
     int z = 0;
@@ -38,6 +20,22 @@ void PIDPalette::printDebug() const
     }
 }
 #endif // DEBUG
+
+PIDPalette::PIDPalette(const unsigned char* ptr)
+{
+    std::copy(ptr, ptr+sizeof(data), (unsigned char*)data);
+}
+
+bool PIDPalette::load(std::istream& stream)
+{
+    stream > data;
+    return true;
+}
+
+bool PIDPalette::save(std::ostream &stream) {
+    stream < data;
+    return true;
+}
 
 const sf::Texture& PIDPalette::getTexture()
 {

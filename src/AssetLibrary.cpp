@@ -1,16 +1,16 @@
 #include "AssetLibrary.h"
 
 #include "PIDStudio.h"
-#include "PIDPalette.h"
-#include "PCXFile.h"
+#include "formats/PIDPalette.h"
+#include "formats/PCXFile.h"
 #include "SupportedGame.h"
 #include "String.h"
 
 #include <stack>
 
 #include <imgui.h>
-
 #include "imgui_internal.h"
+#include "ImGuiExtensions.h"
 
 #ifdef DEBUG
 #include <iostream>
@@ -142,12 +142,9 @@ void AssetLibrary::displayContent() {
 
         bool isOpen = ImGui::TreeNodeEx(node->name.c_str(), flags);
 
-        if (ImGui::GetCurrentContext()->LastItemData.StatusFlags & ImGuiItemStatusFlags_HoveredRect
-            || ImGui::IsPopupOpen(node->name.c_str())) {
-            if (ImGui::BeginPopupContextItem(node->name.c_str())) {
-                app->libraryEntryContextMenu(shared_from_this(), node, isLeaf, node == root);
-                ImGui::EndPopup();
-            }
+        if (ImGui::BeginPopupForLastItem(node->name.c_str())) {
+            app->libraryEntryContextMenu(shared_from_this(), node, isLeaf, node == root);
+            ImGui::EndPopup();
         }
 
         if (isOpen) {

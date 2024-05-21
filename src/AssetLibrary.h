@@ -34,7 +34,6 @@ public:
     void rebuildTreeIfRequired();
     bool hasFilepath(const std::filesystem::path& filepath, std::shared_ptr<AssetLibrary::TreeNode>& outFoundNode);
 
-
     static std::shared_ptr<PIDPalette> inferPalette(const std::shared_ptr<AssetLibrary::TreeNode>& node) ;
 private:
     static std::unordered_map<std::string, FileHandler> supportedFileTypes;

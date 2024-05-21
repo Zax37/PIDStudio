@@ -67,6 +67,7 @@ private:
 	void openedFilesWindows();
 	OPENED_FILE_WINDOW_RESULT openedFileWindow(const std::shared_ptr<PIDFile>& file);
 
+	void keepLibraryFileOpened();
 	void closeFile(const std::shared_ptr<PIDFile>& file);
 	void closeAllFiles();
 
@@ -75,4 +76,6 @@ private:
 	void addLibrary(std::filesystem::path& path, const std::shared_ptr<SupportedGame>& game);
 	bool isFileAlreadyOpen(const std::filesystem::path& path, PIDFile** outFilePtr = nullptr);
 	void openAllFiles(const std::shared_ptr<AssetLibrary>& library, const std::shared_ptr<AssetLibrary::TreeNode>& node);
+	void loadPaletteFromFile();
+	void savePaletteToFile();
 };

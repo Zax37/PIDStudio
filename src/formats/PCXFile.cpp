@@ -3,11 +3,11 @@
 
 #define SUPPORTED_VERSION 0x05
 
-bool PCXFile::loadFromStream(std::ifstream& stream) {
-    unsigned char version;
+bool PCXFile::load(std::istream& stream) {
+    uint8_t version;
     stream.seekg(1);
-    stream >> version;
-    
+    stream > version;
+
     if (version != SUPPORTED_VERSION) {
         return false;
     }
